@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Advanced Sector & Ring Map Maker</title>
+  <title>Advanced Sector & Ring Map Maker - by Taufik Rezki Supriyadi</title>
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -13,14 +13,14 @@
         extend: {
           colors: {
             brand: {
-              dark: '#060b16',
-              panel: '#0b1526',
-              panel2: '#0f1c33',
-              border: '#1e2c47',
-              accent: '#f5b301',
-              accentHover: '#e0a300',
-              text: '#d7e0f0',
-              textDim: '#7c8aa8',
+              bg: '#f8fafc',       /* slate-50 */
+              panel: '#ffffff',    /* white */
+              panel2: '#f1f5f9',   /* slate-100 */
+              border: '#e2e8f0',   /* slate-200 */
+              accent: '#3b82f6',   /* blue-500 */
+              accentHover: '#2563eb', /* blue-600 */
+              text: '#0f172a',     /* slate-900 */
+              textDim: '#64748b',  /* slate-500 */
             }
           }
         }
@@ -41,34 +41,34 @@
   <style>
     /* Custom Scrollbar for Sidebar */
     ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
+      width: 8px;
+      height: 8px;
     }
     ::-webkit-scrollbar-track {
-      background: #060b16;
+      background: #f8fafc;
     }
     ::-webkit-scrollbar-thumb {
-      background: #1e2c47;
-      border-radius: 3px;
+      background: #cbd5e1;
+      border-radius: 4px;
     }
     ::-webkit-scrollbar-thumb:hover {
-      background: #f5b301;
+      background: #94a3b8;
     }
 
     /* Map Label Custom CSS */
     .ring-label-icon {
-      font-size: 10px;
+      font-size: 11px;
       font-weight: 700;
-      color: #fff7dd;
-      text-shadow: 0 1px 3px rgba(0,0,0,.9), 0 0 2px rgba(0,0,0,.9);
+      color: #1e3a8a;
+      text-shadow: 1px 1px 0 #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 0px 2px 4px rgba(0,0,0,0.4);
       white-space: nowrap;
       pointer-events: none;
     }
     .site-label-icon {
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 800;
-      color: #ffffff;
-      text-shadow: 0 1px 4px rgba(0,0,0,.95), 0 0 3px rgba(0,0,0,.95);
+      color: #0f172a;
+      text-shadow: 1px 1px 0 #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 0px 3px 5px rgba(0,0,0,0.5);
       white-space: nowrap;
       pointer-events: none;
     }
@@ -77,118 +77,144 @@
     .transition-all-300 {
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
+    
+    /* Tower Beacon Animation */
+    @keyframes beaconPulse {
+      0% { fill: #ef4444; filter: drop-shadow(0 0 2px #ef4444); }
+      50% { fill: #ff9999; filter: drop-shadow(0 0 8px #ff0000); }
+      100% { fill: #ef4444; filter: drop-shadow(0 0 2px #ef4444); }
+    }
+    .tower-beacon {
+      animation: beaconPulse 1.5s infinite;
+    }
+    
+    /* Hover scale for inputs */
+    input:focus {
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    }
   </style>
 </head>
-<body class="bg-brand-dark text-brand-text h-screen w-screen flex flex-col md:flex-row overflow-hidden font-sans">
+<body class="bg-brand-bg text-brand-text h-screen w-screen flex flex-col md:flex-row overflow-hidden font-sans">
 
   <!-- Main Container -->
   <div class="flex flex-col md:flex-row h-full w-full overflow-hidden">
     
     <!-- LEFT SIDEBAR -->
-    <div id="sidebar" class="w-full md:w-96 min-w-[350px] md:max-w-md bg-brand-panel border-b md:border-b-0 md:border-r border-brand-border flex flex-col h-[50vh] md:h-full z-[1000] overflow-y-auto p-5 transition-all-300">
+    <div id="sidebar" class="w-full md:w-[420px] min-w-[350px] bg-brand-panel border-b md:border-b-0 md:border-r border-brand-border flex flex-col h-[50vh] md:h-full z-[1000] overflow-y-auto shadow-xl transition-all-300">
       
       <!-- Brand / Logo Header -->
-      <div class="flex items-center gap-3 mb-1">
-        <div class="w-3 h-3 rounded-full bg-brand-accent animate-pulse shadow-[0_0_10px_#f5b301]"></div>
-        <h1 class="text-white font-bold text-lg tracking-wider">SECTOR &amp; RING MAPPER</h1>
-      </div>
-      <p class="text-xs text-brand-textDim mb-6 leading-relaxed">
-        Visualisasikan cincin radius &amp; sektor azimuth secara presisi, lalu ekspor langsung ke Google Earth (.kmz).
-      </p>
-
-      <!-- SECTION 1: SITE DETAIL -->
-      <div class="mb-5">
-        <div class="flex items-center justify-between text-brand-accent font-bold text-xs tracking-wider uppercase mb-3 border-b border-brand-border/40 pb-1">
-          <span><i class="fa-solid fa-location-dot mr-1"></i> Data Informasi Situs</span>
-          <span class="text-[9px] text-brand-textDim lowercase italic font-normal">Mendukung salin-tempel Excel</span>
+      <div class="p-6 pb-4 border-b border-brand-border/60 bg-white">
+        <div class="flex items-center gap-3 mb-1">
+          <div class="w-3 h-3 rounded-full bg-brand-accent animate-pulse shadow-[0_0_8px_rgba(59,130,246,0.6)]"></div>
+          <h1 class="text-slate-800 font-extrabold text-lg tracking-wider">SECTOR &amp; RING MAPPER</h1>
         </div>
-        
-        <div class="grid grid-cols-1 gap-3">
-          <div>
-            <label class="block text-[11px] text-brand-textDim font-bold mb-1">Nama Situs / Site ID</label>
-            <div class="relative">
-              <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-brand-textDim">
-                <i class="fa-solid fa-tower-cell text-xs"></i>
-              </span>
-              <input type="text" id="siteName" value="SITE_JKT_04" class="w-full bg-brand-dark border border-brand-border focus:border-brand-accent text-white text-sm rounded-lg pl-9 pr-3 py-2 outline-none transition-all-300">
-            </div>
+        <p class="text-[11px] font-semibold text-brand-accent mb-3 tracking-wide">
+          <i class="fa-solid fa-user-shield mr-1"></i> Hak Cipta © Taufik Rezki Supriyadi
+        </p>
+        <p class="text-xs text-brand-textDim leading-relaxed">
+          Visualisasikan cincin radius &amp; sektor azimuth secara presisi, lalu ekspor langsung ke Google Earth (.kmz).
+        </p>
+      </div>
+
+      <div class="p-6 flex-1 flex flex-col gap-6">
+        <!-- SECTION 1: SITE DETAIL -->
+        <div>
+          <div class="flex items-center justify-between text-brand-accent font-bold text-xs tracking-wider uppercase mb-3 border-b border-brand-border pb-2">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-location-dot"></i> Informasi Situs</span>
+            <span class="text-[10px] text-brand-textDim lowercase italic font-normal bg-brand-panel2 px-2 py-0.5 rounded-full">Support Copy-Paste Excel</span>
           </div>
           
-          <div class="grid grid-cols-2 gap-3">
+          <div class="grid grid-cols-1 gap-4">
             <div>
-              <label class="block text-[11px] text-brand-textDim font-bold mb-1">Latitude</label>
-              <input type="text" id="lat" value="-7.4478" inputmode="decimal" placeholder="-7.1234" class="w-full bg-brand-dark border border-brand-border focus:border-brand-accent text-white text-sm rounded-lg px-3 py-2 outline-none transition-all-300">
+              <label class="block text-[11px] text-brand-text font-bold mb-1.5">Nama Situs / Site ID</label>
+              <div class="relative">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-brand-textDim">
+                  <i class="fa-solid fa-tower-cell text-xs"></i>
+                </span>
+                <input type="text" id="siteName" value="" class="w-full bg-brand-bg border border-brand-border focus:border-brand-accent text-brand-text font-semibold text-sm rounded-lg pl-9 pr-3 py-2.5 outline-none transition-all-300">
+              </div>
             </div>
-            <div>
-              <label class="block text-[11px] text-brand-textDim font-bold mb-1">Longitude</label>
-              <input type="text" id="lon" value="112.7183" inputmode="decimal" placeholder="112.1234" class="w-full bg-brand-dark border border-brand-border focus:border-brand-accent text-white text-sm rounded-lg px-3 py-2 outline-none transition-all-300">
+            
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-[11px] text-brand-text font-bold mb-1.5">Latitude</label>
+                <input type="text" id="lat" value="" inputmode="decimal" placeholder="-7.1234" class="w-full bg-brand-bg border border-brand-border focus:border-brand-accent text-brand-text font-medium text-sm rounded-lg px-3 py-2.5 outline-none transition-all-300">
+              </div>
+              <div>
+                <label class="block text-[11px] text-brand-text font-bold mb-1.5">Longitude</label>
+                <input type="text" id="lon" value="" inputmode="decimal" placeholder="112.1234" class="w-full bg-brand-bg border border-brand-border focus:border-brand-accent text-brand-text font-medium text-sm rounded-lg px-3 py-2.5 outline-none transition-all-300">
+              </div>
             </div>
           </div>
+          <div class="bg-blue-50 text-blue-800 text-[10px] p-2.5 rounded-lg mt-3 border border-blue-100 flex gap-2 items-start">
+            <i class="fa-solid fa-lightbulb mt-0.5 text-blue-500"></i>
+            <p class="leading-relaxed">
+              <span class="font-bold">Tip Tempel:</span> Salin dua sel berdampingan di Excel (Lat &amp; Lon), klik kolom Latitude lalu tekan <kbd class="bg-white px-1.5 py-0.5 rounded shadow-sm border border-blue-200 text-[9px] font-mono">Ctrl+V</kbd>. Kolom otomatis terisi!
+            </p>
+          </div>
         </div>
-        <p class="text-[10px] text-brand-textDim/80 mt-2 leading-relaxed">
-          💡 <span class="font-semibold text-brand-text">Tip Tempel:</span> Salin dua sel berdampingan di Excel (Lat &amp; Lon), klik kolom Latitude lalu tekan <kbd class="bg-brand-dark px-1 py-0.5 rounded border border-brand-border text-white text-[9px]">Ctrl+V</kbd>. Kedua kolom otomatis terisi!
-        </p>
-      </div>
 
-      <!-- SECTION 2: CONFIGURATION RINGS -->
-      <div class="mb-5">
-        <div class="flex items-center text-brand-accent font-bold text-xs tracking-wider uppercase mb-3 border-b border-brand-border/40 pb-1">
-          <span><i class="fa-solid fa-circle-notch mr-1"></i> Pengaturan Jarak Ring</span>
-        </div>
-        
+        <!-- SECTION 2: CONFIGURATION RINGS -->
         <div>
-          <label class="block text-[11px] text-brand-textDim font-bold mb-1">Radius Ring (meter) — Pisahkan dengan koma</label>
-          <div class="relative">
-            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-brand-textDim">
-              <i class="fa-solid fa-ruler-combined text-xs"></i>
-            </span>
-            <input type="text" id="ringRadii" value="100, 300, 500" placeholder="e.g. 50, 100, 500, 1000" class="w-full bg-brand-dark border border-brand-border focus:border-brand-accent text-white text-sm rounded-lg pl-9 pr-3 py-2 outline-none transition-all-300">
+          <div class="flex items-center text-brand-accent font-bold text-xs tracking-wider uppercase mb-3 border-b border-brand-border pb-2">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-circle-notch"></i> Pengaturan Jarak Ring</span>
           </div>
-          <p class="text-[10px] text-brand-textDim mt-1">Ukur rentang radius dari titik tengah situs.</p>
-        </div>
-      </div>
-
-      <!-- SECTION 3: SECTOR AZIMUTH (DYNAMIC) -->
-      <div class="mb-5 flex-1">
-        <div class="flex items-center justify-between text-brand-accent font-bold text-xs tracking-wider uppercase mb-2 border-b border-brand-border/40 pb-1">
-          <span><i class="fa-solid fa-compass mr-1"></i> Sektor Azimuth</span>
-          <button id="addSectorBtn" class="text-[11px] text-brand-accent bg-brand-panel2 hover:bg-brand-border border border-brand-border px-2 py-0.5 rounded flex items-center gap-1 transition-all-300">
-            <i class="fa-solid fa-plus text-[9px]"></i> Tambah Sektor
-          </button>
-        </div>
-        
-        <p class="text-[10px] text-brand-textDim mb-3 leading-relaxed">
-          Atur arah azimuth dan lebar pancaran (beamwidth). Salin beberapa baris/kolom dari Excel dan tempel ke input Azimuth untuk pengisian cepat.
-        </p>
-
-        <!-- Dynamic Sector Inputs Container -->
-        <div id="sectorsContainer" class="space-y-3">
-          <!-- Dynamically inserted sectors go here -->
-        </div>
-
-        <!-- Presets Container -->
-        <div class="mt-4 pt-3 border-t border-brand-border/30">
-          <label class="block text-[10px] text-brand-textDim font-bold mb-1.5">Template Cepat (Presets):</label>
-          <div class="flex flex-wrap gap-1.5">
-            <button onclick="applyPreset(1)" class="text-[10px] px-2.5 py-1 bg-brand-panel2 hover:bg-brand-border text-white border border-brand-border rounded transition-all-300">Omni (1 Sektor)</button>
-            <button onclick="applyPreset(3)" class="text-[10px] px-2.5 py-1 bg-brand-panel2 hover:bg-brand-border text-white border border-brand-border rounded transition-all-300">3 Sektor (Standard)</button>
-            <button onclick="applyPreset(4)" class="text-[10px] px-2.5 py-1 bg-brand-panel2 hover:bg-brand-border text-white border border-brand-border rounded transition-all-300">4 Sektor (Cross)</button>
-            <button onclick="applyPreset(6)" class="text-[10px] px-2.5 py-1 bg-brand-panel2 hover:bg-brand-border text-white border border-brand-border rounded transition-all-300">6 Sektor (High-density)</button>
+          
+          <div>
+            <label class="block text-[11px] text-brand-text font-bold mb-1.5">Radius Ring (meter) — Pisahkan dengan koma</label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-brand-textDim">
+                <i class="fa-solid fa-ruler-combined text-xs"></i>
+              </span>
+              <input type="text" id="ringRadii" value="100, 300, 500" placeholder="e.g. 50, 100, 500, 1000" class="w-full bg-brand-bg border border-brand-border focus:border-brand-accent text-brand-text font-medium text-sm rounded-lg pl-9 pr-3 py-2.5 outline-none transition-all-300">
+            </div>
+            <p class="text-[10px] text-brand-textDim mt-1.5"><i class="fa-solid fa-circle-info mr-1"></i> Ukur rentang radius pancaran dari titik tengah situs.</p>
           </div>
         </div>
+
+        <!-- SECTION 3: SECTOR AZIMUTH (DYNAMIC) -->
+        <div class="flex-1">
+          <div class="flex items-center justify-between text-brand-accent font-bold text-xs tracking-wider uppercase mb-3 border-b border-brand-border pb-2">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-compass"></i> Sektor Azimuth</span>
+            <button id="addSectorBtn" class="text-[11px] text-brand-accent bg-blue-50 hover:bg-blue-100 hover:text-blue-700 border border-blue-200 px-2.5 py-1 rounded-md flex items-center gap-1.5 transition-all-300 font-semibold shadow-sm">
+              <i class="fa-solid fa-plus text-[10px]"></i> Tambah
+            </button>
+          </div>
+          
+          <p class="text-[10px] text-brand-textDim mb-4 leading-relaxed">
+            Atur arah azimuth dan lebar pancaran (beamwidth). Salin beberapa baris dari Excel dan tempel ke input Azimuth untuk pengisian cepat.
+          </p>
+
+          <!-- Dynamic Sector Inputs Container -->
+          <div id="sectorsContainer" class="space-y-3 max-h-[300px] overflow-y-auto pr-1 pb-2">
+            <!-- Dynamically inserted sectors go here -->
+          </div>
+
+          <!-- Presets Container -->
+          <div class="mt-4 pt-4 border-t border-brand-border">
+            <label class="block text-[11px] text-brand-text font-bold mb-2">Template Cepat (Presets):</label>
+            <div class="flex flex-wrap gap-2">
+              <button onclick="applyPreset(1)" class="text-[10px] font-semibold px-3 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 shadow-sm rounded-md transition-all-300">Omni (1 Sektor)</button>
+              <button onclick="applyPreset(3)" class="text-[10px] font-semibold px-3 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 shadow-sm rounded-md transition-all-300">3 Sektor (Standard)</button>
+              <button onclick="applyPreset(4)" class="text-[10px] font-semibold px-3 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 shadow-sm rounded-md transition-all-300">4 Sektor (Cross)</button>
+              <button onclick="applyPreset(6)" class="text-[10px] font-semibold px-3 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 shadow-sm rounded-md transition-all-300">6 Sektor (High)</button>
+            </div>
+          </div>
+        </div>
+
       </div>
 
       <!-- BUTTON ACTION FOOTER -->
-      <div class="mt-auto space-y-2 pt-4 border-t border-brand-border/60">
-        <button id="drawBtn" class="w-full py-3 px-4 bg-gradient-to-r from-yellow-500 to-brand-accent hover:from-yellow-400 hover:to-yellow-500 text-brand-dark font-extrabold text-sm rounded-lg shadow-md hover:shadow-lg transition-all-300 tracking-wider flex items-center justify-center gap-2">
+      <div class="mt-auto space-y-3 p-6 bg-slate-50 border-t border-brand-border">
+        <button id="drawBtn" class="w-full py-3.5 px-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-extrabold text-sm rounded-xl shadow-lg hover:shadow-xl transition-all-300 tracking-wider flex items-center justify-center gap-2 transform hover:-translate-y-0.5">
           <i class="fa-solid fa-wand-magic-sparkles"></i> RENDERING PETA
         </button>
         
-        <button id="kmzBtn" class="w-full py-2.5 px-4 bg-brand-panel2 hover:bg-brand-border text-brand-accent hover:text-white border border-brand-border rounded-lg font-bold text-xs tracking-wider transition-all-300 flex items-center justify-center gap-2">
-          <i class="fa-solid fa-file-zipper"></i> UNDUH KMZ (GOOGLE EARTH)
+        <button id="kmzBtn" class="w-full py-3 px-4 bg-white hover:bg-slate-100 text-slate-700 border-2 border-slate-300 rounded-xl font-bold text-xs tracking-wider shadow-sm transition-all-300 flex items-center justify-center gap-2">
+          <i class="fa-solid fa-file-zipper text-brand-accent"></i> UNDUH KMZ (GOOGLE EARTH)
         </button>
         
-        <button id="resetBtn" class="w-full py-2 px-4 bg-transparent hover:bg-red-950/20 text-brand-textDim hover:text-red-400 border border-brand-border hover:border-red-900/60 rounded-lg text-xs font-semibold transition-all-300">
+        <button id="resetBtn" class="w-full py-2 px-4 bg-transparent hover:bg-red-50 text-brand-textDim hover:text-red-600 border border-transparent hover:border-red-200 rounded-lg text-xs font-semibold transition-all-300 mt-2">
           <i class="fa-solid fa-trash-can mr-1"></i> Bersihkan Semua Data
         </button>
       </div>
@@ -199,40 +225,41 @@
     <div class="flex-1 h-[50vh] md:h-full relative flex flex-col">
       
       <!-- TOP CONTROL FLOATING BAR -->
-      <div class="absolute top-4 left-4 right-4 z-[1001] pointer-events-none flex flex-col sm:flex-row gap-2 justify-between">
+      <div class="absolute top-4 left-4 right-4 z-[1001] pointer-events-none flex flex-col sm:flex-row gap-3 justify-between">
         
         <!-- Nominatim Geocoder Search -->
-        <div class="pointer-events-auto w-full sm:w-80 bg-brand-panel/95 backdrop-blur-md border border-brand-border rounded-lg shadow-lg flex overflow-hidden">
-          <input type="text" id="searchInput" placeholder="Cari lokasi/kota..." class="flex-1 bg-transparent text-white text-xs px-3 py-2 outline-none">
-          <button id="searchBtn" class="bg-brand-panel2 text-brand-accent hover:bg-brand-border px-3 transition-all-300">
-            <i class="fa-solid fa-magnifying-glass text-xs"></i>
+        <div class="pointer-events-auto w-full sm:w-80 bg-white/95 backdrop-blur-md border border-brand-border rounded-xl shadow-lg flex overflow-hidden p-1">
+          <input type="text" id="searchInput" placeholder="Cari lokasi/kota..." class="flex-1 bg-transparent text-brand-text text-xs px-3 py-2 outline-none font-medium">
+          <button id="searchBtn" class="bg-blue-50 text-brand-accent hover:bg-blue-100 rounded-lg px-4 transition-all-300 font-bold">
+            <i class="fa-solid fa-magnifying-glass"></i>
           </button>
         </div>
 
         <!-- Basemap Selector Buttons -->
-        <div class="pointer-events-auto bg-brand-panel/95 backdrop-blur-md border border-brand-border rounded-lg p-1 shadow-lg flex gap-1 self-end sm:self-auto overflow-x-auto max-w-full">
-          <button onclick="setBaseLayer('satellite')" id="btn-sat" class="px-2.5 py-1 rounded text-[11px] font-bold transition-all-300 bg-brand-accent text-brand-dark flex items-center gap-1 whitespace-nowrap">
+        <div class="pointer-events-auto bg-white/95 backdrop-blur-md border border-brand-border rounded-xl p-1.5 shadow-lg flex gap-1 self-end sm:self-auto overflow-x-auto max-w-full">
+          <button onclick="setBaseLayer('street')" id="btn-street" class="px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all-300 bg-brand-accent text-white shadow-sm flex items-center gap-1.5 whitespace-nowrap">
+            <i class="fa-solid fa-road"></i> Street
+          </button>
+          <button onclick="setBaseLayer('satellite')" id="btn-sat" class="px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all-300 text-slate-600 hover:bg-slate-100 flex items-center gap-1.5 whitespace-nowrap">
             <i class="fa-solid fa-satellite"></i> Satelit
           </button>
-          <button onclick="setBaseLayer('street')" id="btn-street" class="px-2.5 py-1 rounded text-[11px] font-bold transition-all-300 text-brand-textDim hover:text-white flex items-center gap-1 whitespace-nowrap">
-            <i class="fa-solid fa-road"></i> Street Map
-          </button>
-          <button onclick="setBaseLayer('dark')" id="btn-dark" class="px-2.5 py-1 rounded text-[11px] font-bold transition-all-300 text-brand-textDim hover:text-white flex items-center gap-1 whitespace-nowrap">
-            <i class="fa-solid fa-moon"></i> Sleek Dark
+          <button onclick="setBaseLayer('dark')" id="btn-dark" class="px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all-300 text-slate-600 hover:bg-slate-100 flex items-center gap-1.5 whitespace-nowrap">
+            <i class="fa-solid fa-moon"></i> Dark
           </button>
         </div>
 
       </div>
 
       <!-- MAP ELEMENT -->
-      <div id="map" class="w-full h-full"></div>
+      <div id="map" class="w-full h-full bg-brand-bg"></div>
 
       <!-- MAP FOOTER WATERMARK -->
-      <div class="absolute bottom-6 left-4 z-[1000] pointer-events-none bg-brand-dark/80 backdrop-blur-sm border border-brand-border/40 px-3 py-1.5 rounded-md shadow-md">
-        <div class="flex items-center gap-1.5">
-          <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
-          <span class="text-[10px] font-mono tracking-widest uppercase text-brand-text">sector &amp; ring engine v2.0</span>
+      <div class="absolute bottom-6 left-4 z-[1000] pointer-events-none bg-white/90 backdrop-blur-sm border border-slate-200 px-4 py-2.5 rounded-xl shadow-lg flex flex-col">
+        <div class="flex items-center gap-2 mb-0.5">
+          <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+          <span class="text-[11px] font-bold tracking-widest uppercase text-slate-800">sector &amp; ring engine v3.0</span>
         </div>
+        <span class="text-[9px] font-semibold text-slate-500 ml-4">Designed &amp; Owned by <span class="text-blue-600">Taufik Rezki Supriyadi</span></span>
       </div>
 
     </div>
@@ -240,28 +267,72 @@
   </div>
 
   <!-- TOAST NOTIFICATION CONTAINER -->
-  <div id="toastContainer" class="fixed bottom-5 right-5 z-[5000] flex flex-col gap-2 pointer-events-none"></div>
+  <div id="toastContainer" class="fixed bottom-5 right-5 z-[5000] flex flex-col gap-3 pointer-events-none"></div>
 
   <!-- LEAFLET & LOGIC CODE -->
   <script>
-    // Default High-Contrast Colors for Dynamic Sectors
+    // Modern High-Contrast Colors for Dynamic Sectors
     const PRESET_COLORS = [
-      '#e5484d', // Red
-      '#f2c200', // Yellow
-      '#34c759', // Green
-      '#00c7fc', // Light Blue
-      '#af52de', // Purple
-      '#ff9500', // Orange
-      '#ff2d55', // Pink
-      '#5856d6', // Violet
-      '#a2845e'  // Brown
+      '#ef4444', // Red
+      '#eab308', // Yellow
+      '#22c55e', // Green
+      '#06b6d4', // Cyan
+      '#8b5cf6', // Purple
+      '#f97316', // Orange
+      '#ec4899', // Pink
+      '#6366f1', // Indigo
+      '#84cc16'  // Lime
     ];
 
-    // App State
+    // SVG 3D Tower Icon for center marker
+    const towerSvg = `
+      <svg width="48" height="80" viewBox="0 0 100 200" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0px 8px 10px rgba(0,0,0,0.4));">
+        <!-- Base Shadow -->
+        <ellipse cx="50" cy="190" rx="35" ry="12" fill="rgba(0,0,0,0.35)" />
+        
+        <!-- Back Legs -->
+        <line x1="25" y1="180" x2="45" y2="40" stroke="#94a3b8" stroke-width="4" stroke-linecap="round"/>
+        <line x1="75" y1="180" x2="55" y2="40" stroke="#64748b" stroke-width="4" stroke-linecap="round"/>
+        
+        <!-- Horizontal Braces (Back) -->
+        <line x1="30" y1="145" x2="70" y2="145" stroke="#94a3b8" stroke-width="3" />
+        <line x1="35" y1="110" x2="65" y2="110" stroke="#94a3b8" stroke-width="3" />
+        <line x1="40" y1="75" x2="60" y2="75" stroke="#94a3b8" stroke-width="3" />
+        
+        <!-- Front Leg -->
+        <line x1="50" y1="190" x2="50" y2="40" stroke="#f1f5f9" stroke-width="6" stroke-linecap="round"/>
+        
+        <!-- Diagonal Braces (Front/Left) -->
+        <line x1="25" y1="180" x2="50" y2="145" stroke="#cbd5e1" stroke-width="4" />
+        <line x1="30" y1="145" x2="50" y2="110" stroke="#cbd5e1" stroke-width="4" />
+        <line x1="35" y1="110" x2="50" y2="75" stroke="#cbd5e1" stroke-width="4" />
+        
+        <!-- Diagonal Braces (Front/Right) -->
+        <line x1="75" y1="180" x2="50" y2="145" stroke="#cbd5e1" stroke-width="4" />
+        <line x1="70" y1="145" x2="50" y2="110" stroke="#cbd5e1" stroke-width="4" />
+        <line x1="65" y1="110" x2="50" y2="75" stroke="#cbd5e1" stroke-width="4" />
+        
+        <!-- Antenna Mount / Top Structure -->
+        <rect x="46" y="10" width="8" height="40" fill="#475569" rx="2" />
+        <line x1="32" y1="35" x2="68" y2="35" stroke="#334155" stroke-width="4" stroke-linecap="round"/>
+        <line x1="38" y1="20" x2="62" y2="20" stroke="#334155" stroke-width="4" stroke-linecap="round"/>
+        
+        <!-- Microwave Dishes / Antennas -->
+        <circle cx="32" cy="35" r="5" fill="#e2e8f0" stroke="#64748b" stroke-width="1.5"/>
+        <circle cx="68" cy="35" r="5" fill="#e2e8f0" stroke="#64748b" stroke-width="1.5"/>
+        <rect x="36" y="12" width="4" height="12" fill="#f8fafc" rx="1"/>
+        <rect x="60" y="12" width="4" height="12" fill="#f8fafc" rx="1"/>
+
+        <!-- Beacon Light (Animated) -->
+        <circle cx="50" cy="8" r="5" fill="#ef4444" class="tower-beacon" />
+      </svg>
+    `;
+
+    // App State - Starting with empty Azimuth values and 85° Beamwidth
     let sectors = [
-      { id: 1, az: "30", width: "65", color: PRESET_COLORS[0] },
-      { id: 2, az: "150", width: "65", color: PRESET_COLORS[1] },
-      { id: 3, az: "270", width: "65", color: PRESET_COLORS[2] }
+      { id: 1, az: "", width: "85", color: PRESET_COLORS[0] },
+      { id: 2, az: "", width: "85", color: PRESET_COLORS[1] },
+      { id: 3, az: "", width: "85", color: PRESET_COLORS[2] }
     ];
     let nextSectorId = 4;
     let lastGeometry = null;
@@ -269,7 +340,7 @@
     // ---------- MAP SETTING & BASEMAPS ----------
     const map = L.map('map', { zoomControl: false }).setView([-7.4478, 112.7183], 15);
     
-    // Custom Zoom Position (Bottom Right to not conflict with side panels/watermarks)
+    // Custom Zoom Position
     L.control.zoom({ position: 'bottomright' }).addTo(map);
 
     // Basemaps dictionary
@@ -293,8 +364,8 @@
       })
     };
 
-    // Add default basemap
-    let currentBasemap = 'satellite';
+    // Default to Street map for a bright modern look
+    let currentBasemap = 'street';
     basemaps[currentBasemap].addTo(map);
 
     // Layer Group to hold drawn vectors
@@ -307,13 +378,13 @@
       basemaps[type].addTo(map);
       currentBasemap = type;
 
-      // Update button styling states
+      // Update button styling states for light theme
       ['satellite', 'street', 'dark'].forEach(b => {
         const btn = document.getElementById(`btn-${b === 'satellite' ? 'sat' : b}`);
         if (b === type) {
-          btn.className = "px-2.5 py-1 rounded text-[11px] font-bold transition-all-300 bg-brand-accent text-brand-dark flex items-center gap-1 whitespace-nowrap";
+          btn.className = "px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all-300 bg-brand-accent text-white shadow-sm flex items-center gap-1.5 whitespace-nowrap";
         } else {
-          btn.className = "px-2.5 py-1 rounded text-[11px] font-bold transition-all-300 text-brand-textDim hover:text-white flex items-center gap-1 whitespace-nowrap";
+          btn.className = "px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all-300 text-slate-600 hover:bg-slate-100 flex items-center gap-1.5 whitespace-nowrap";
         }
       });
       showToast(`Peta dasar diubah ke: ${type}`, 'info');
@@ -324,38 +395,40 @@
       const container = document.getElementById('toastContainer');
       const toast = document.createElement('div');
       
-      let bg = 'bg-brand-panel';
-      let text = 'text-white';
-      let icon = '<i class="fa-solid fa-circle-info text-blue-400"></i>';
+      // Modern Light Theme Toasts
+      let bg = 'bg-white';
+      let border = 'border-slate-200';
+      let text = 'text-slate-800';
+      let icon = '<i class="fa-solid fa-circle-info text-blue-500 text-lg"></i>';
+      let accentBar = 'bg-blue-500';
       
       if (type === 'success') {
-        bg = 'bg-emerald-950/90';
-        text = 'text-emerald-100';
-        icon = '<i class="fa-solid fa-circle-check text-emerald-400 text-sm"></i>';
+        icon = '<i class="fa-solid fa-circle-check text-emerald-500 text-lg"></i>';
+        accentBar = 'bg-emerald-500';
       } else if (type === 'error') {
-        bg = 'bg-rose-950/90';
-        text = 'text-rose-100';
-        icon = '<i class="fa-solid fa-circle-exclamation text-rose-400 text-sm"></i>';
-      } else if (type === 'info') {
-        bg = 'bg-brand-panel2/95';
-        text = 'text-brand-text';
-        icon = '<i class="fa-solid fa-circle-info text-brand-accent text-sm"></i>';
+        icon = '<i class="fa-solid fa-circle-exclamation text-rose-500 text-lg"></i>';
+        accentBar = 'bg-rose-500';
       }
 
-      toast.className = `${bg} ${text} px-4 py-3 rounded-lg shadow-2xl border border-brand-border/60 flex items-center gap-2.5 max-w-sm pointer-events-auto transform translate-y-2 opacity-0 transition-all duration-300 ease-out`;
-      toast.innerHTML = `${icon} <span class="text-xs font-semibold">${message}</span>`;
+      toast.className = `${bg} ${border} ${text} relative overflow-hidden pl-4 pr-5 py-3.5 rounded-xl shadow-[0_10px_25px_-5px_rgba(0,0,0,0.1)] border flex items-center gap-3 w-max max-w-sm pointer-events-auto transform translate-y-4 opacity-0 transition-all duration-400 ease-[cubic-bezier(0.34,1.56,0.64,1)]`;
+      
+      toast.innerHTML = `
+        <div class="absolute left-0 top-0 bottom-0 w-1 ${accentBar}"></div>
+        ${icon} 
+        <span class="text-[13px] font-semibold tracking-wide">${message}</span>
+      `;
       
       container.appendChild(toast);
       
       // Animate entry
-      setTimeout(() => {
-        toast.classList.remove('translate-y-2', 'opacity-0');
-      }, 50);
+      requestAnimationFrame(() => {
+        toast.classList.remove('translate-y-4', 'opacity-0');
+      });
 
       // Dismiss after 4 seconds
       const dismiss = () => {
-        toast.classList.add('translate-y-2', 'opacity-0');
-        setTimeout(() => toast.remove(), 300);
+        toast.classList.add('translate-y-4', 'opacity-0');
+        setTimeout(() => toast.remove(), 400);
       };
       
       setTimeout(dismiss, 4000);
@@ -391,29 +464,29 @@
 
       sectors.forEach((sec, idx) => {
         const div = document.createElement('div');
-        div.className = 'p-3 bg-brand-panel2 border border-brand-border rounded-lg relative transition-all-300 hover:border-brand-textDim/50';
+        div.className = 'p-3.5 bg-white border border-slate-200 rounded-xl relative transition-all-300 hover:shadow-md hover:border-slate-300 group';
         div.style.borderLeft = `4px solid ${sec.color}`;
 
         div.innerHTML = `
-          <div class="flex items-center justify-between mb-2">
-            <span class="text-xs font-bold flex items-center gap-1.5" style="color: ${sec.color}">
-              <span class="w-2.5 h-2.5 rounded-sm" style="background-color: ${sec.color}"></span>
-              Sektor ${idx + 1}
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-extrabold flex items-center gap-2" style="color: ${sec.color}">
+              <span class="w-3 h-3 rounded-full shadow-sm" style="background-color: ${sec.color}"></span>
+              SEKTOR ${idx + 1}
             </span>
             ${sectors.length > 1 ? `
-              <button onclick="removeSector(${sec.id})" class="text-[10px] text-brand-textDim hover:text-red-400 transition-all-300" title="Hapus sektor">
-                <i class="fa-solid fa-trash-can"></i> Hapus
+              <button onclick="removeSector(${sec.id})" class="text-[11px] text-slate-400 hover:text-red-500 bg-slate-50 hover:bg-red-50 px-2 py-1 rounded transition-all-300 opacity-0 group-hover:opacity-100" title="Hapus sektor">
+                <i class="fa-solid fa-trash-can"></i>
               </button>
             ` : ''}
           </div>
-          <div class="grid grid-cols-2 gap-2">
+          <div class="grid grid-cols-2 gap-3">
             <div>
-              <label class="block text-[9px] text-brand-textDim uppercase tracking-wide font-semibold mb-0.5">Azimuth (° / NA)</label>
-              <input type="text" value="${sec.az}" data-field="az" data-id="${sec.id}" class="sector-input w-full bg-brand-dark border border-brand-border focus:border-brand-accent text-white text-xs rounded px-2 py-1 outline-none transition-all-300">
+              <label class="block text-[10px] text-slate-500 uppercase tracking-wide font-bold mb-1">Azimuth (°)</label>
+              <input type="text" value="${sec.az}" data-field="az" data-id="${sec.id}" class="sector-input w-full bg-slate-50 border border-slate-200 focus:border-blue-500 text-slate-800 font-semibold text-xs rounded-lg px-3 py-2 outline-none transition-all-300 focus:bg-white">
             </div>
             <div>
-              <label class="block text-[9px] text-brand-textDim uppercase tracking-wide font-semibold mb-0.5">Lebar Sektor (°)</label>
-              <input type="number" value="${sec.width}" data-field="width" data-id="${sec.id}" class="sector-input w-full bg-brand-dark border border-brand-border focus:border-brand-accent text-white text-xs rounded px-2 py-1 outline-none transition-all-300">
+              <label class="block text-[10px] text-slate-500 uppercase tracking-wide font-bold mb-1">Beamwidth (°)</label>
+              <input type="number" value="${sec.width}" data-field="width" data-id="${sec.id}" class="sector-input w-full bg-slate-50 border border-slate-200 focus:border-blue-500 text-slate-800 font-semibold text-xs rounded-lg px-3 py-2 outline-none transition-all-300 focus:bg-white">
             </div>
           </div>
         `;
@@ -428,8 +501,8 @@
       const nextColor = PRESET_COLORS[sectors.length % PRESET_COLORS.length];
       sectors.push({
         id: nextSectorId++,
-        az: String((sectors.length * 120) % 360),
-        width: "65",
+        az: "",
+        width: "85",
         color: nextColor
       });
       renderSectorsDOM();
@@ -451,8 +524,8 @@
         const nextColor = PRESET_COLORS[i % PRESET_COLORS.length];
         sectors.push({
           id: nextSectorId++,
-          az: String(azimuthVal),
-          width: count === 1 ? "360" : "65",
+          az: count === 1 ? "0" : String(azimuthVal),
+          width: count === 1 ? "360" : "85",
           color: nextColor
         });
       }
@@ -480,7 +553,6 @@
       ['lat', 'lon'].forEach(id => {
         document.getElementById(id).addEventListener('paste', function(e) {
           const text = (e.clipboardData || window.clipboardData).getData('text');
-          // Split on spaces, tab, comma, semicolon or line break
           const tokens = text.split(/\t|,|;|\s+/).map(t => t.trim()).filter(t => t.length);
           if (tokens.length >= 2 && !isNaN(parseFloat(tokens[0])) && !isNaN(parseFloat(tokens[1]))) {
             e.preventDefault();
@@ -503,14 +575,12 @@
           
           if (tokens.length >= 2) {
             e.preventDefault();
-            showToast(`Memproses penempelan ${tokens.length} data azimuth dari Excel...`, 'info');
+            showToast(`Memproses penempelan ${tokens.length} data azimuth...`, 'info');
             
-            // Re-map the state array to adopt new azimuth values sequentially
             tokens.forEach((val, i) => {
               if (i < sectors.length) {
                 sectors[i].az = val;
               } else {
-                // Generate next dynamic sector if tokens exceed current list size
                 const nextColor = PRESET_COLORS[sectors.length % PRESET_COLORS.length];
                 sectors.push({
                   id: nextSectorId++,
@@ -546,7 +616,6 @@
           map.setView([lat, lon], 16);
           showToast(`Ketemu! Lompat ke: ${data[0].display_name}`, 'success');
           
-          // Trigger rendering with new coordinates
           drawAll();
         } else {
           showToast(`Lokasi tidak ditemukan. Cek ejaan Anda.`, 'error');
@@ -562,10 +631,10 @@
     });
 
     // ---------- CALCULATION ENGINE & RENDER ON MAP ----------
-    function drawAll() {
+    function drawAll(isInitial = false) {
       drawnLayer.clearLayers();
 
-      const siteName = document.getElementById('siteName').value.trim() || 'SITE';
+      const siteName = document.getElementById('siteName').value.trim() || '';
       const lat = parseNum(document.getElementById('lat').value);
       const lon = parseNum(document.getElementById('lon').value);
       
@@ -576,11 +645,15 @@
         .sort((a, b) => a - b);
 
       if (lat === null || lon === null) {
-        showToast('Kesalahan: Latitude atau Longitude tidak valid.', 'error');
+        if (!isInitial) {
+          showToast('Kesalahan: Latitude atau Longitude tidak valid.', 'error');
+        }
         return;
       }
       if (!ringRadii.length) {
-        showToast('Kesalahan: Masukkan setidaknya satu nilai radius ring (m).', 'error');
+        if (!isInitial) {
+          showToast('Kesalahan: Masukkan setidaknya satu nilai radius ring (m).', 'error');
+        }
         return;
       }
 
@@ -591,43 +664,18 @@
       ringRadii.forEach((r, idx) => {
         L.circle([lat, lon], {
           radius: r,
-          color: '#f5b301',
-          weight: 1.2,
-          opacity: 0.8,
-          dashArray: '5,5',
+          color: '#3b82f6', // blue accent for rings
+          weight: 1.5,
+          opacity: 0.7,
+          dashArray: '6,6',
           fill: false,
           interactive: false
         }).addTo(drawnLayer);
       });
 
-      // 2. Draw Center Site Marker
-      L.circleMarker([lat, lon], {
-        radius: 6,
-        color: '#ffffff',
-        weight: 2,
-        fillColor: '#f5b301',
-        fillOpacity: 1
-      }).addTo(drawnLayer).bindPopup(`
-        <div class="p-1 font-sans text-slate-800">
-          <h3 class="font-bold text-sm text-indigo-950">${siteName}</h3>
-          <p class="text-[11px] mt-1 text-slate-600"><b>Coords:</b> ${lat.toFixed(6)}, ${lon.toFixed(6)}</p>
-          <p class="text-[11px] text-slate-600"><b>Total Sektor:</b> ${sectors.length}</p>
-        </div>
-      `);
-
-      L.marker([lat, lon], {
-        icon: L.divIcon({
-          className: 'site-label-icon',
-          html: siteName,
-          iconSize: [0, 0],
-          iconAnchor: [-12, 6]
-        }),
-        interactive: false
-      }).addTo(drawnLayer);
-
       const exportSectors = [];
 
-      // 3. Draw Dynamic Sectors
+      // 2. Draw Dynamic Sectors
       sectors.forEach((sec, idx) => {
         if (isNA(sec.az)) {
           exportSectors.push({ id: idx + 1, skipped: true });
@@ -644,7 +692,7 @@
 
         const start = az - sectorWidth / 2;
         const end = az + sectorWidth / 2;
-        const steps = Math.max(3, Math.ceil(sectorWidth / 2)); // Dynamic segment mapping
+        const steps = Math.max(3, Math.ceil(sectorWidth / 2)); 
         
         const arcPts = [];
         for (let s = 0; s <= steps; s++) {
@@ -654,26 +702,33 @@
 
         let polyPts;
         if (sectorWidth >= 360) {
-          // OMNI Directional
           polyPts = arcPts;
         } else {
-          // Directional beam
           polyPts = [[lat, lon], ...arcPts, [lat, lon]];
         }
 
         // Draw Polygon Sector
         L.polygon(polyPts, {
           color: sec.color,
-          weight: 1.5,
+          weight: 2,
           opacity: 0.9,
           fillColor: sec.color,
-          fillOpacity: 0.35
+          fillOpacity: 0.25
         }).addTo(drawnLayer).bindPopup(`
-          <div class="p-1 font-sans text-slate-800">
-            <h4 class="font-bold text-xs" style="color: ${sec.color}">Sektor ${idx + 1}</h4>
-            <p class="text-[11px] mt-1"><b>Azimuth:</b> ${az}°</p>
-            <p class="text-[11px]"><b>Beamwidth:</b> ${sectorWidth}°</p>
-            <p class="text-[11px]"><b>Max Radius:</b> ${maxRadius} m</p>
+          <div class="p-2 font-sans text-slate-800 min-w-[120px]">
+            <h4 class="font-bold text-[13px] border-b pb-1 mb-2" style="color: ${sec.color}; border-color: ${sec.color}40">Sektor ${idx + 1}</h4>
+            <div class="flex justify-between text-[11px] mb-1">
+              <span class="text-slate-500">Azimuth:</span> 
+              <span class="font-bold">${az}°</span>
+            </div>
+            <div class="flex justify-between text-[11px] mb-1">
+              <span class="text-slate-500">Beamwidth:</span> 
+              <span class="font-bold">${sectorWidth}°</span>
+            </div>
+            <div class="flex justify-between text-[11px]">
+              <span class="text-slate-500">Max Radius:</span> 
+              <span class="font-bold">${maxRadius} m</span>
+            </div>
           </div>
         `);
 
@@ -684,21 +739,19 @@
         ringRadii.forEach((r, ringIdx) => {
           const pt = destPoint(lat, lon, az, r);
           
-          // Center line pointing towards the outer limit
           if (ringIdx === ringRadii.length - 1 && sectorWidth < 360) {
             L.polyline([[lat, lon], pt], {
-              color: '#f5b301',
+              color: '#3b82f6',
               weight: 1,
-              opacity: 0.5,
-              dashArray: '2,3'
+              opacity: 0.6,
+              dashArray: '3,4'
             }).addTo(drawnLayer);
           }
 
-          // Target marker node on sector direction
           L.circleMarker(pt, {
-            radius: 3.5,
+            radius: 4,
             color: '#fff',
-            weight: 1,
+            weight: 1.5,
             fillColor: sec.color,
             fillOpacity: 1
           }).addTo(drawnLayer);
@@ -709,7 +762,7 @@
               className: 'ring-label-icon',
               html: label,
               iconSize: [0, 0],
-              iconAnchor: [-8, 4]
+              iconAnchor: [-10, 5]
             }),
             interactive: false
           }).addTo(drawnLayer);
@@ -730,19 +783,55 @@
 
       });
 
+      // 3. Draw Center Site Marker as 3D Tower
+      const customTowerIcon = L.divIcon({
+        className: 'custom-3d-tower',
+        html: towerSvg,
+        iconSize: [48, 80],
+        iconAnchor: [24, 75], // anchor at the bottom center of the SVG
+        popupAnchor: [0, -70]
+      });
+
+      L.marker([lat, lon], {
+        icon: customTowerIcon,
+        interactive: true,
+        zIndexOffset: 1000 // Always on top
+      }).addTo(drawnLayer).bindPopup(`
+        <div class="p-2 font-sans text-slate-800 text-center min-w-[150px]">
+          <h3 class="font-extrabold text-sm text-blue-700 bg-blue-50 py-1 px-2 rounded mb-2">${siteName || 'SITE'}</h3>
+          <p class="text-[11px] text-slate-600 mb-1"><b>Lat:</b> ${lat.toFixed(5)} <br/><b>Lon:</b> ${lon.toFixed(5)}</p>
+          <p class="text-[11px] text-slate-600 border-b border-slate-200 pb-2 mb-2"><b>Total Sektor:</b> ${sectors.length}</p>
+          <p class="text-[9px] font-semibold text-slate-400">Dimiliki & Dikelola Oleh:</p>
+          <p class="text-[10px] font-bold text-slate-700">Taufik Rezki Supriyadi</p>
+        </div>
+      `);
+
+      // Label Nama Site (Offset ke samping supaya tidak menabrak tower)
+      if (siteName) {
+        L.marker([lat, lon], {
+          icon: L.divIcon({
+            className: 'site-label-icon',
+            html: siteName,
+            iconSize: [0, 0],
+            iconAnchor: [-25, 10] 
+          }),
+          interactive: false
+        }).addTo(drawnLayer);
+      }
+
       // Zoom adjust view frame
       map.fitBounds(bounds, { padding: [50, 50] });
 
       // Save geometry structure to memory for KML builder
       lastGeometry = {
-        siteName,
+        siteName: siteName || 'SITE',
         lat,
         lon,
         ringRadii,
         sectors: exportSectors
       };
 
-      showToast('Rendering peta selesai!', 'success');
+      showToast('Rendering peta selesai dengan Visual 3D!', 'success');
     }
 
     // ---------- KMZ FORMAT ENGINE (KML BUILDER) ----------
@@ -764,11 +853,14 @@
     function buildKml(g) {
       let placemarks = '';
 
-      // 1. Site point Placemark
+      // 1. Site point Placemark (Center)
       placemarks += `
       <Placemark>
         <name>${g.siteName}</name>
-        <description>Site Center Coordinate: ${g.lat}, ${g.lon}</description>
+        <description>
+          Site Center Coordinate: ${g.lat}, ${g.lon}
+          Owner: Taufik Rezki Supriyadi
+        </description>
         <Point><coordinates>${g.lon},${g.lat},0</coordinates></Point>
       </Placemark>`;
 
@@ -779,8 +871,8 @@
         <name>Ring ${idx + 1} (${r} m)</name>
         <Style>
           <LineStyle>
-            <color>${hexToKmlColor('f5b301', 'e0')}</color>
-            <width>1.8</width>
+            <color>${hexToKmlColor('3b82f6', 'd0')}</color>
+            <width>2</width>
           </LineStyle>
         </Style>
         <LineString>
@@ -802,10 +894,10 @@
         <Style>
           <LineStyle>
             <color>${hexToKmlColor(sec.color, 'ff')}</color>
-            <width>1.8</width>
+            <width>2</width>
           </LineStyle>
           <PolyStyle>
-            <color>${hexToKmlColor(sec.color, '5a')}</color>
+            <color>${hexToKmlColor(sec.color, '40')}</color>
           </PolyStyle>
         </Style>
         <Polygon>
@@ -827,7 +919,7 @@
       return `<?xml version="1.0" encoding="UTF-8"?>
 <kml xmlns="http://www.opengis.net/kml/2.2">
 <Document>
-  <name>${g.siteName} - Map Plotting</name>
+  <name>${g.siteName} - by Taufik Rezki Supriyadi</name>
   <open>1</open>
   ${placemarks}
 </Document>
@@ -853,7 +945,7 @@
         
         const a = document.createElement('a');
         a.href = url;
-        a.download = `${lastGeometry.siteName.replace(/\s+/g, '_')}_sector_map.kmz`;
+        a.download = `${lastGeometry.siteName.replace(/\s+/g, '_')}_taufik_rs.kmz`;
         
         document.body.appendChild(a);
         a.click();
@@ -868,18 +960,18 @@
 
     // ---------- LISTENERS AND BOOTSTRAP ----------
     document.getElementById('addSectorBtn').addEventListener('click', addSector);
-    document.getElementById('drawBtn').addEventListener('click', drawAll);
+    document.getElementById('drawBtn').addEventListener('click', () => drawAll(false));
     document.getElementById('kmzBtn').addEventListener('click', downloadKmz);
     
     document.getElementById('resetBtn').addEventListener('click', () => {
       drawnLayer.clearLayers();
       lastGeometry = null;
-      document.getElementById('siteName').value = 'NEW_SITE';
+      document.getElementById('siteName').value = '';
       document.getElementById('lat').value = '';
       document.getElementById('lon').value = '';
       document.getElementById('ringRadii').value = '100, 300, 500';
       sectors = [
-        { id: 1, az: "0", width: "65", color: PRESET_COLORS[0] }
+        { id: 1, az: "", width: "85", color: PRESET_COLORS[0] }
       ];
       renderSectorsDOM();
       showToast('Formulir & peta telah dibersihkan.', 'info');
@@ -887,7 +979,7 @@
 
     // Bootstrapping
     renderSectorsDOM();
-    drawAll();
+    drawAll(true); // Auto render on load (fails silently on empty fields)
   </script>
 </body>
 </html>
