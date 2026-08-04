@@ -86,18 +86,18 @@
 
     /* Map Label Custom CSS */
     .ring-label-icon {
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--brand-accent);
-      text-shadow: 1px 1px 0 var(--label-shadow), -1px -1px 0 var(--label-shadow), 1px -1px 0 var(--label-shadow), -1px 1px 0 var(--label-shadow), 0px 2px 4px rgba(0,0,0,0.4);
+      font-size: 12px;
+      font-weight: 800;
+      color: #eab308;
+      text-shadow: 1px 1px 0 #000000, -1px -1px 0 #000000, 1px -1px 0 #000000, -1px 1px 0 #000000, 0px 2px 4px rgba(0,0,0,0.5);
       white-space: nowrap;
       pointer-events: none;
     }
     .site-label-icon {
       font-size: 14px;
       font-weight: 800;
-      color: var(--brand-text);
-      text-shadow: 1px 1px 0 var(--label-shadow), -1px -1px 0 var(--label-shadow), 1px -1px 0 var(--label-shadow), -1px 1px 0 var(--label-shadow), 0px 3px 5px rgba(0,0,0,0.5);
+      color: #ffffff;
+      text-shadow: 1px 1px 0 #000000, -1px -1px 0 #000000, 1px -1px 0 #000000, -1px 1px 0 #000000, 0px 3px 5px rgba(0,0,0,0.5);
       white-space: nowrap;
       pointer-events: none;
     }
@@ -698,17 +698,16 @@
       const maxRadius = ringRadii[ringRadii.length - 1];
       const bounds = [[lat, lon]];
 
-      // Get logic color for accent based on theme
-      const accentColor = document.body.classList.contains('theme-dark-neon') ? '#eab308' : '#3b82f6';
+      // Get logic color for accent (locked to neon-yellow to match reference styling)
+      const accentColor = '#eab308';
 
       // 1. Draw Rings (Circle Radius Line)
       ringRadii.forEach((r, idx) => {
         L.circle([lat, lon], {
           radius: r,
           color: accentColor, 
-          weight: 1.5,
-          opacity: 0.7,
-          dashArray: '6,6',
+          weight: 2,
+          opacity: 0.95,
           fill: false,
           interactive: false
         }).addTo(drawnLayer);
@@ -750,11 +749,11 @@
 
         // Draw Polygon Sector
         L.polygon(polyPts, {
-          color: sec.color,
+          color: '#000000',
           weight: 2,
           opacity: 0.9,
           fillColor: sec.color,
-          fillOpacity: 0.25
+          fillOpacity: 0.55
         }).addTo(drawnLayer).bindPopup(`
           <div class="p-2 font-sans text-brand-text min-w-[120px]">
             <h4 class="font-bold text-[13px] border-b pb-1 mb-2" style="color: ${sec.color}; border-color: ${sec.color}40">Sektor ${idx + 1}</h4>
@@ -777,33 +776,42 @@
 
         // Draw Sector Center Line & Ring Point Indicators
         const ringMarkers = [];
+
+        // Solid radial (azimuth) line from site center out to the last ring point
+        if (sectorWidth < 360) {
+          const outerPt = destPoint(lat, lon, az, maxRadius);
+          L.polyline([[lat, lon], outerPt], {
+            color: accentColor,
+            weight: 2,
+            opacity: 0.95
+          }).addTo(drawnLayer);
+        }
+
         ringRadii.forEach((r, ringIdx) => {
           const pt = destPoint(lat, lon, az, r);
-          
-          if (ringIdx === ringRadii.length - 1 && sectorWidth < 360) {
-            L.polyline([[lat, lon], pt], {
-              color: accentColor,
-              weight: 1,
-              opacity: 0.6,
-              dashArray: '3,4'
-            }).addTo(drawnLayer);
-          }
 
-          L.circleMarker(pt, {
-            radius: 4,
-            color: document.body.classList.contains('theme-dark-neon') ? '#222' : '#fff',
-            weight: 1.5,
-            fillColor: sec.color,
-            fillOpacity: 1
+          // Blue pin marker at each ring intersection (matches reference style)
+          L.marker(pt, {
+            icon: L.divIcon({
+              className: 'ring-pin-icon',
+              html: `<svg width="26" height="34" viewBox="0 0 26 34" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));">
+                <path d="M13 0C5.8 0 0 5.8 0 13c0 9.5 13 21 13 21s13-11.5 13-21c0-7.2-5.8-13-13-13z" fill="#1e78e0" stroke="#ffffff" stroke-width="1.5"/>
+                <circle cx="13" cy="13" r="5.5" fill="#ffffff"/>
+              </svg>`,
+              iconSize: [26, 34],
+              iconAnchor: [13, 32]
+            }),
+            interactive: false,
+            zIndexOffset: 500
           }).addTo(drawnLayer);
 
-          const label = `S${ringIdx + 1}_Sec${idx + 1}`;
+          const label = `Sec${idx + 1}_Scen${ringIdx + 1}`;
           L.marker(pt, {
             icon: L.divIcon({
               className: 'ring-label-icon',
               html: label,
               iconSize: [0, 0],
-              iconAnchor: [-10, 5]
+              iconAnchor: [-8, 30]
             }),
             interactive: false
           }).addTo(drawnLayer);
